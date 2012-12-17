@@ -3,22 +3,45 @@
   <head>
     <link type="text/css" rel="stylesheet" href="/stylesheets/bootstrap.css" />
   </head>
-  <body><div class="container">
-  	<div class="page-header">
-  	<h2>Greetings Mothafucka!</h2>
-  </div>
-    {% for greeting in greetings %}
-      {% if greeting.author %}
-        <b>{{ greeting.author }}</b> wrote:
-      {% else %}
-        An anonymous person wrote:
-      {% endif %}
-      <blockquote>{{ greeting.content|escape }}</blockquote>
-    {% endfor %}
+  <body>
+  <div class="container">
+    <header class="jumbotron subhead" id="overview">
+    <h1>Final Project</h1>
+    <ul class="breadcrumb">
+      <li><a href="#">Categories</a><span class="divider">/</span></li>
+      <li><a href="#">Add New</a><span class="divider">/</span></li>
+      <li><a href="#">All Results</a></li>
+    </ul>
+  </header>
+    <div class="page-header">
+      <h3>Categories</h3>
+    </div>
+    <table class="table table-bordered table-striped table-hover">
+      <thead>
+        <tr>
+          <th>Category</th>
+          <th>Author</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for category in categories %}
+        <tr>
+          <td>{{ category.name }}</td>
+          <td>{{ category.author }}</td>
+          <td><a href="/edit?category_name={{ category.name }}">Edit</a> </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    
 
-    <form action="/sign" method="post">
-      <div><textarea name="content" rows="3" cols="60"></textarea></div>
-      <div><input type="submit" value="Sign Guestbook"></div>
+    <b>Enter a new Category:</b>
+    <form action="/new" method="post">
+      <div><textarea name="category_name" rows="1" cols="60"></textarea></div>
+      <b>Enter an Item:</b>
+      <div><textarea name="item" rows="1" cols="60"></textarea></div>
+      <div><input type="submit" value="Create new Category"></div>
     </form>
 
     <a href="{{ url }}">{{ url_linktext }}</a>

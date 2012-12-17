@@ -14,7 +14,9 @@ details,
 figcaption,
 figure,
 footer,
-header,
+header {
+  padding-top: 30px;
+}
 hgroup,
 nav,
 section {
@@ -596,7 +598,9 @@ a.text-info:hover {
 a.text-success:hover {
   color: #2c8d3a;
 }
-h1,
+h1 {
+  padding-bottom: 0px;
+}
 h2,
 h3,
 h4,
