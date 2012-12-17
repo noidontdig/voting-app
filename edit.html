@@ -15,16 +15,17 @@
     <div class="page-header">
       <h3>Edit</h3>
     </div>
-    <h3>Editing Category: {{ category.name }}</h3>
+    <h3>{{ category.name }}:</h3>
     {% for item in category.items %}
-      <blockquote>{{ item.content|escape }}</blockquote>
+      <blockquote>{{ item.content|escape }} - 
+        <a href="/edit/delete_new/{{ item.key.id }}"><i>delete</i></a></blockquote> 
     {% endfor %}
 
     <b>Enter a new Item:</b>
     <form action="/edit" method="post">
-      <div><input type="hidden" name="category_name" value="{{ category.name }}"></div>
-      <div><textarea name="item" rows="1" cols="60"></textarea></div>
-      <div><input type="submit" value="Add Item"></div>
+      <div><input type="hidden" name="category_id" value="{{ category.key.id }}"></div>
+      <div><input type="text" class="input-xlarge" name="item"></div>
+      <div><button type="submit" class="btn btn-primary">Add Item</div>
     </form>
 
   </div>

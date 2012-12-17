@@ -17,6 +17,9 @@
       <h3>Categories</h3>
     </div>
     <table class="table table-bordered table-striped table-hover">
+      <col width=40%>
+      <col width=30%>
+      <col width=30%>
       <thead>
         <tr>
           <th>Category</th>
@@ -29,7 +32,11 @@
         <tr>
           <td>{{ category.name }}</td>
           <td>{{ category.author }}</td>
-          <td><a href="/edit?category_name={{ category.name }}">Edit</a> </td>
+          <td>
+            <a href="/edit/{{ category.key.id }}">Edit</a> 
+            - <a href="/vote?category_name={{ category.name }}">Vote</a> 
+            - <a href="/results?category_name={{ category.name }}">Results</a> 
+          </td>
         </tr>
         {% endfor %}
       </tbody>

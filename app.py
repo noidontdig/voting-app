@@ -19,8 +19,8 @@ class Item(db.Model):
   content = db.StringProperty()
   category = db.ReferenceProperty(Category, collection_name='items')
 
-def category_key(category_name):
-  return db.Key.from_path('Category', category_name)
+def category_key(category_id):
+  return db.Key.from_path('Category', int(category_id))
 
 class MainPage(webapp.RequestHandler):
   def get(self):
@@ -57,7 +57,7 @@ class Create(webapp.RequestHandler):
 
   def post(self):
     cat_name = self.request.get('category_name')
-    category = Category(key_name=cat_name, name=cat_name)
+    category = Category(name=cat_name)
     if users.get_current_user():
       category.author = users.get_current_user().nickname()
 
@@ -71,10 +71,9 @@ class Create(webapp.RequestHandler):
 
 
 class Edit(webapp.RequestHandler):
-  def get(self):
+  def get(self, category_id):
 
-    category_name = self.request.get('category_name')
-    category = db.get(category_key(category_name))
+    category = Category.get(category_key(category_id))
 
     template_values = {
         'category': category,
@@ -84,14 +83,20 @@ class Edit(webapp.RequestHandler):
     self.response.out.write(template.render(path, template_values))
 
   def post(self):
-    category_name = self.request.get('category_name')
-    category = db.get(category_key(category_name))
-    
+
+    category_id = self.request.get('category_id')
+    category = Category.get(category_key(category_id))
+
     new_item = self.request.get('item')
     Item(category=category,
-          content=new_item).put()
+         content=new_item).put()
 
-    self.redirect("/edit?category_name=%s" % category.name)
+    self.redirect("/edit/%s" % category_id)
+
+
+
+def item_key(item_id):
+  return db.Key.from_path('Item', item_name)
 
 class Results(webapp.RequestHandler):
   def get(self):
@@ -111,6 +116,7 @@ application = webapp.WSGIApplication(
                       [('/', MainPage),
                        ('/new', Create),
                        ('/edit', Edit),
+                       ('/edit/(.*)', Edit),
                        ('/results', Results)],
                        debug=True)
 
