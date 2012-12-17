@@ -46,6 +46,15 @@ class MainPage(webapp.RequestHandler):
     self.response.out.write(template.render(path, template_values))
 
 class Create(webapp.RequestHandler):
+  def get(self):
+
+    template_values = {
+
+    }
+
+    path = os.path.join(os.path.dirname(__file__), 'new.html')
+    self.response.out.write(template.render(path, template_values))
+
   def post(self):
     cat_name = self.request.get('category_name')
     category = Category(key_name=cat_name, name=cat_name)
@@ -84,11 +93,25 @@ class Edit(webapp.RequestHandler):
 
     self.redirect("/edit?category_name=%s" % category.name)
 
+class Results(webapp.RequestHandler):
+  def get(self):
+
+    results = "results"
+    template_values = {
+        'results' : results,
+    }
+
+    path = os.path.join(os.path.dirname(__file__), 'results.html')
+    self.response.out.write(template.render(path, template_values))
+
+    
+
 
 application = webapp.WSGIApplication(
                       [('/', MainPage),
                        ('/new', Create),
-                       ('/edit', Edit)],
+                       ('/edit', Edit),
+                       ('/results', Results)],
                        debug=True)
 
 

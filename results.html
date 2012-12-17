@@ -13,20 +13,9 @@
     </ul>
     </header>
     <div class="page-header">
-      <h3>Edit</h3>
+      <h3>Results</h3>
     </div>
-    <h3>Editing Category: {{ category.name }}</h3>
-    {% for item in category.items %}
-      <blockquote>{{ item.content|escape }}</blockquote>
-    {% endfor %}
-
-    <b>Enter a new Item:</b>
-    <form action="/edit" method="post">
-      <div><input type="hidden" name="category_name" value="{{ category.name }}"></div>
-      <div><textarea name="item" rows="1" cols="60"></textarea></div>
-      <div><input type="submit" value="Add Item"></div>
-    </form>
-
+    
   </div>
   </body>
 </html>
