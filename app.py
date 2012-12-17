@@ -18,6 +18,7 @@ class Category(db.Model):
 class Item(db.Model):
   content = db.StringProperty()
   category = db.ReferenceProperty(Category, collection_name='items')
+  votes = db.IntegerProperty()
 
 def category_key(category_id):
   return db.Key.from_path('Category', int(category_id))
@@ -48,8 +49,17 @@ class MainPage(webapp.RequestHandler):
 class Create(webapp.RequestHandler):
   def get(self):
 
-    template_values = {
+    if users.get_current_user():
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+    else:
+        url = users.create_login_url(self.request.uri)
+        url_linktext = 'Login'
 
+    template_values = {
+        'url': url,
+        'url_linktext': url_linktext,
+ 
     }
 
     path = os.path.join(os.path.dirname(__file__), 'new.html')
@@ -73,11 +83,20 @@ class Create(webapp.RequestHandler):
 class Edit(webapp.RequestHandler):
   def get(self, category_id):
 
+    if users.get_current_user():
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+    else:
+        url = users.create_login_url(self.request.uri)
+        url_linktext = 'Login'
+
     category = Category.get(category_key(category_id))
 
     template_values = {
         'category': category,
-    }
+        'url': url,
+        'url_linktext': url_linktext,
+     }
   
     path = os.path.join(os.path.dirname(__file__), 'edit.html')
     self.response.out.write(template.render(path, template_values))
@@ -90,20 +109,40 @@ class Edit(webapp.RequestHandler):
     new_item = self.request.get('item')
     Item(category=category,
          content=new_item).put()
-
     self.redirect("/edit/%s" % category_id)
 
+class Delete(webapp.RequestHandler):
+  def get(self, thing_id):
+    cat = Category.get(category_key(thing_id))
+    item = Item.get(item_key(thing_id))
+    if cat:
+      cat.delete()
+      self.redirect('/', MainPage)
+    if item:
+      item_category = item.category
+      category_id = item_category.key().id()
+      item.delete()
+      self.redirect("/edit/%s" % category_id)
 
 
 def item_key(item_id):
-  return db.Key.from_path('Item', item_name)
+  return db.Key.from_path('Item', int(item_id))
 
 class Results(webapp.RequestHandler):
   def get(self):
 
+    if users.get_current_user():
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+    else:
+        url = users.create_login_url(self.request.uri)
+        url_linktext = 'Login'
+
     results = "results"
     template_values = {
         'results' : results,
+        'url': url,
+        'url_linktext': url_linktext,
     }
 
     path = os.path.join(os.path.dirname(__file__), 'results.html')
@@ -116,7 +155,8 @@ application = webapp.WSGIApplication(
                       [('/', MainPage),
                        ('/new', Create),
                        ('/edit', Edit),
-                       ('/edit/(.*)', Edit),
+                       (r'/edit/(.*)', Edit),
+                       (r'/delete/(.*)', Delete),
                        ('/results', Results)],
                        debug=True)
 

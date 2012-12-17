@@ -17,8 +17,8 @@
     </div>
     <h3>{{ category.name }}:</h3>
     {% for item in category.items %}
-      <blockquote>{{ item.content|escape }} - 
-        <a href="/edit/delete_new/{{ item.key.id }}"><i>delete</i></a></blockquote> 
+      <blockquote>{{ item.content }} - 
+        <a href="/delete/{{ item.key.id }}"><i>delete</i></a></blockquote> 
     {% endfor %}
 
     <b>Enter a new Item:</b>
@@ -27,6 +27,8 @@
       <div><input type="text" class="input-xlarge" name="item"></div>
       <div><button type="submit" class="btn btn-primary">Add Item</div>
     </form>
+
+   <a href="{{ url }}">{{ url_linktext }}</a>
 
   </div>
   </body>

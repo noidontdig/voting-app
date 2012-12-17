@@ -34,8 +34,9 @@
           <td>{{ category.author }}</td>
           <td>
             <a href="/edit/{{ category.key.id }}">Edit</a> 
-            - <a href="/vote?category_name={{ category.name }}">Vote</a> 
-            - <a href="/results?category_name={{ category.name }}">Results</a> 
+            - <a href="/vote/{{ category.key.id }}">Vote</a> 
+            - <a href="/results/{{ category.key.id }}">Results</a> 
+            - <a href="/delete/{{ category.key.id }}">Delete</a>
           </td>
         </tr>
         {% endfor %}
