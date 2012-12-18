@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="/stylesheets/bootstrap.css" />
+  </head>
+  <body><div class="container">
+    <header class="jumbotron subhead" id="overview">
+    <h1>Final Project</h1>
+    <ul class="breadcrumb">
+      <li><a href="/">All Categories</a><span class="divider">/</span></li>
+      <li><a href="/new">Add New Category</a><span class="divider">/</span></li>
+      <li><a href="/results">All Results</a></li>
+    </ul>
+    </header>
+    <div class="page-header">
+      <h3>Vote</h3>
+    </div>  
+    {% if voted %}
+      <p>You voted for <b>'{{ winner.content }}'</b> over <b>'{{ loser.content }}'</b></p></br>
+      <p><b>Current totals:</b></p>
+      <div>{{ winner.content }} / {{ winner.votes }}</div>
+      <div>{{ loser.content }} / {{ loser.votes }}</div>
+          
+    <hr>
+    {% endif %}
+    <h3>{{ category.name }}:</h3>
+    <form action="/vote/{{ category.key.id }}" method="post">
+
+      <div><input type="hidden" name="pair" value="{{ item1.key.id }},
+        {{ item2.key.id }}"></div>
+
+      <div>
+        <label class="radio">
+          <input type="radio" name="vote" value="{{ item1.key.id }}" checked>
+        {{ item1.content }}</label></div>
+    
+      <div>
+        <label class="radio">
+          <input type="radio" name="vote" value="{{ item2.key.id }}">
+        {{ item2.content }}</label></div>
+      <div>
+      </br>
+        <button type="submit" class="btn btn-primary" name="didvote" value="1">Vote!</button>
+        <button type="submit" class="btn" name="skip" value="1">Skip</button>
+        {% if voted %}
+          <a href="/results/{{ category.key.id }}">See Results</a>
+        {% endif %}
+      </div>
+    </form>
+
+   <a href="{{ url }}">{{ url_linktext }}</a>
+
+    </div>
+    
+  </div>
+  </body>
+</html>

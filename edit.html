@@ -12,21 +12,25 @@
       <li><a href="/results">All Results</a></li>
     </ul>
     </header>
+    {% if error %}
+      <p class="text-error">{{ error }}</p>
+    {% else %}
     <div class="page-header">
       <h3>Edit</h3>
     </div>
-    <h3>{{ category.name }}:</h3>
-    {% for item in category.items %}
-      <blockquote>{{ item.content }} - 
-        <a href="/delete/{{ item.key.id }}"><i>delete</i></a></blockquote> 
-    {% endfor %}
+      <h3>{{ category.name }}:</h3>
+      {% for item in category.items %}
+        <blockquote>{{ item.content }} - 
+          <a href="/delete/{{ item.key.id }}"><i>delete</i></a></blockquote> 
+      {% endfor %}
 
-    <b>Enter a new Item:</b>
-    <form action="/edit" method="post">
-      <div><input type="hidden" name="category_id" value="{{ category.key.id }}"></div>
-      <div><input type="text" class="input-xlarge" name="item"></div>
-      <div><button type="submit" class="btn btn-primary">Add Item</div>
-    </form>
+      <b>Enter a new Item:</b>
+      <form action="/edit" method="post">
+        <div><input type="hidden" name="category_id" value="{{ category.key.id }}"></div>
+        <div><input type="text" class="input-xlarge" name="item"></div>
+        <div><button type="submit" class="btn btn-primary">Add Item</div>
+      </form>
+    {% endif %}
 
    <a href="{{ url }}">{{ url_linktext }}</a>
 
