@@ -1,0 +1,8 @@
+<CATEGORY>
+  <NAME>{{ category.name }}</NAME>
+  {% for item in items %}
+    <ITEM>
+      <NAME>{{ item.content }}</NAME>
+    </ITEM>
+  {% endfor %}
+</CATEGORY>

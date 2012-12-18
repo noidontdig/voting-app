@@ -15,6 +15,31 @@
     <div class="page-header">
       <h3>Results</h3>
     </div>
+    {% for cat in results %}
+      <div><h3>{{ cat.name }}</h3></div>
+      <div>
+        <table class="table table-bordered table-striped table-hover">
+          <thead>
+            <tr>
+              <th>Item</th>
+              <th>Wins</th>
+              <th>Losses</th>
+              <th>Percent Wins</th>
+            </tr>
+          </thead>
+          <tbody>
+      {% for item in cat.items %}
+            <tr>
+              <td>{{ item.content }}</td>
+              <td>{{ item.votes }}</td>
+              <td>{{ item.losses }}</td>
+              <td>{{ item.percent_win }}</td>
+            </tr>
+      {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
     
    <a href="{{ url }}">{{ url_linktext }}</a>
     

@@ -4,13 +4,13 @@ import datetime
 import urllib
 import wsgiref.handlers
 
-from random import choice
 from random import sample
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.api import users
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.ext.webapp import template
+from xml.dom.minidom import parse, parseString
 
 class Category(db.Model):
   author = db.StringProperty()
@@ -21,6 +21,8 @@ class Item(db.Model):
   content = db.StringProperty()
   category = db.ReferenceProperty(Category, collection_name='items')
   votes = db.IntegerProperty()
+  losses = db.IntegerProperty()
+  percent_win = db.IntegerProperty()
 
 def category_key(category_id):
   return db.Key.from_path('Category', int(category_id))
@@ -30,6 +32,15 @@ class MainPage(webapp.RequestHandler):
   def get(self):
     
     categories = Category.all()
+
+    #for cat in categories:
+    #  for item in cat.items:
+    #    total = item.votes + item.losses + 0.0
+    #    percent = item.votes / total
+    #    percent_wins = percent * 100
+    #    item.percent_win = int(percent_wins)
+    #    item.put()
+        
 
     if users.get_current_user():
         url = users.create_logout_url(self.request.uri)
@@ -77,7 +88,7 @@ class Create(webapp.RequestHandler):
     new_item = self.request.get('item')
     Item(category=category,
           content=new_item,
-          votes=0).put()
+          votes=0, losses=0, percent_win=0).put()
 
     self.redirect('/', MainPage)
 
@@ -120,7 +131,7 @@ class Edit(webapp.RequestHandler):
     new_item = self.request.get('item')
     Item(category=category,
          content=new_item,
-         votes=0).put()
+         votes=0, losses=0, percent_win=0).put()
     self.redirect("/edit/%s" % category_id)
 
 class Delete(webapp.RequestHandler):
@@ -212,7 +223,11 @@ class Vote(webapp.RequestHandler):
       loser = Item.get(item_key(loser_id))
       
       winner.votes += 1
+      loser.losses += 1
+      #winner.percent_win = (winner.votes / (winner.votes + winner.losses)) * 100
+      #loser.percent_win = (loser.votes / (loser.votes + loser.losses)) * 100
       winner.put()
+      loser.put()
 
     else:
       voted = False
@@ -249,9 +264,11 @@ class Vote(webapp.RequestHandler):
 def item_key(item_id):
   return db.Key.from_path('Item', int(item_id))
 
-class Results(webapp.RequestHandler):
+class AllResults(webapp.RequestHandler):
   def get(self):
 
+    results = Category.all()
+      
     if users.get_current_user():
         url = users.create_logout_url(self.request.uri)
         url_linktext = 'Logout'
@@ -259,7 +276,6 @@ class Results(webapp.RequestHandler):
         url = users.create_login_url(self.request.uri)
         url_linktext = 'Login'
 
-    results = "results"
     template_values = {
         'results' : results,
         'url': url,
@@ -269,9 +285,35 @@ class Results(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'results.html')
     self.response.out.write(template.render(path, template_values))
 
+class Results(webapp.RequestHandler):
+  def get(self, category_id):
 
-    
+    category = Category.get(category_key(category_id))
+    results = [category]
+      
+    if users.get_current_user():
+        url = users.create_logout_url(self.request.uri)
+        url_linktext = 'Logout'
+    else:
+        url = users.create_login_url(self.request.uri)
+        url_linktext = 'Login'
 
+    template_values = {
+        'results': results,
+        'url': url,
+        'url_linktext': url_linktext,
+    }
+
+    path = os.path.join(os.path.dirname(__file__), 'results.html')
+    self.response.out.write(template.render(path, template_values))
+  
+class Export(webapp.RequestHandler):
+  def get(self, category_id):
+
+    category = Category.get(category_key(category_id))
+    path = os.path.join(os.path.dirname(__file__), 'export.xml')
+    self.response.out.write(template.render(path, {'category': category, 'items': category.items}))
+    self.response.headers.add_header("Content-type", 'text/xml')
 
 application = webapp.WSGIApplication(
                       [('/', MainPage),
@@ -280,7 +322,9 @@ application = webapp.WSGIApplication(
                        (r'/edit/(.*)', Edit),
                        (r'/delete/(.*)', Delete),
                        (r'/vote/(.*)', Vote),
-                       ('/results', Results)],
+                       (r'/export/(.*)', Export),
+                       ('/results', AllResults),
+                       (r'/results/(.*)', Results)],
                        debug=True)
 
 
