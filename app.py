@@ -78,17 +78,38 @@ class Create(webapp.RequestHandler):
     self.response.out.write(template.render(path, template_values))
 
   def post(self):
-    cat_name = self.request.get('category_name')
-    category = Category(name=cat_name)
-    if users.get_current_user():
-      category.author = users.get_current_user().nickname()
 
-    category.put()
+    isCreate = self.request.get('create')
+    isImport = self.request.get('import')
+    if isCreate:
+      cat_name = self.request.get('category_name')
+      category = Category(name=cat_name)
+      if users.get_current_user():
+        category.author = users.get_current_user().nickname()
 
-    new_item = self.request.get('item')
-    Item(category=category,
-          content=new_item,
+      category.put()
+
+      new_item = self.request.get('item')
+      Item(category=category,
+            content=new_item,
+            votes=0, losses=0, percent_win=0).put()
+
+    else:
+      document = parseString(self.request.POST.multi['import_category'].file.read())
+      tree = document.documentElement
+      cat_name = str(tree.getElementsByTagName('NAME')[0].firstChild.nodeValue)
+      category = Category(name=cat_name)
+      if users.get_current_user():
+        category.author = users.get_current_user().nickname()
+      category.put()
+      items = []
+      for item in tree.getElementsByTagName('NAME')[1:]:
+        items.append(str(item.firstChild.nodeValue))
+      for item in items:
+        Item(content=item, 
+          category=category,
           votes=0, losses=0, percent_win=0).put()
+
 
     self.redirect('/', MainPage)
 
@@ -125,14 +146,43 @@ class Edit(webapp.RequestHandler):
 
   def post(self):
 
+    isEdit = self.request.get('add_item')
     category_id = self.request.get('category_id')
     category = Category.get(category_key(category_id))
 
-    new_item = self.request.get('item')
-    Item(category=category,
-         content=new_item,
-         votes=0, losses=0, percent_win=0).put()
-    self.redirect("/edit/%s" % category_id)
+    if isEdit:  
+      new_item = self.request.get('item')
+      Item(category=category,
+           content=new_item,
+           votes=0, losses=0, percent_win=0).put()
+      self.redirect("/edit/%s" % category_id)
+
+    else:
+      document = parseString(self.request.POST.multi['import_category'].file.read())
+      tree = document.documentElement
+      cat_name = str(tree.getElementsByTagName('NAME')[0].firstChild.nodeValue)
+      if cat_name != category.name:
+        error = "You Imported the wrong Category"
+        category.author = users.get_current_user().nickname()
+        template_values = {
+        'error': error,
+        }
+        path = os.path.join(os.path.dirname(__file__), 'edit.html')
+        self.response.out.write(template.render(path, template_values))
+      else: 
+        items = []
+        for item in tree.getElementsByTagName('NAME')[1:]:
+          items.append(str(item.firstChild.nodeValue))
+        for item in items:
+          for i in category.items:
+            if item == i.content:
+              i.delete()
+          Item(content=item, 
+            category=category,
+            votes=0, losses=0, percent_win=0).put()
+
+
+        self.redirect("/edit/%s" % category_id)
 
 class Delete(webapp.RequestHandler):
   def get(self, thing_id):
@@ -314,6 +364,8 @@ class Export(webapp.RequestHandler):
     path = os.path.join(os.path.dirname(__file__), 'export.xml')
     self.response.out.write(template.render(path, {'category': category, 'items': category.items}))
     self.response.headers.add_header("Content-type", 'text/xml')
+
+   
 
 application = webapp.WSGIApplication(
                       [('/', MainPage),

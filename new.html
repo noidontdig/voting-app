@@ -20,9 +20,17 @@
       <div><input type="text" class="input-xlarge" name="category_name"></div>
       <b>Enter an Item:</b>
       <div><input type="text" class="input-xlarge" name="item"></div>
-      <div><button type="submit" class="btn btn-primary">
-        Create new Category</div>
+      <div><button type="submit" class="btn btn-primary" name="create" value="1">
+        Create new Category</button></div>
+    
     </form>
+    <div><i>-- or --</i></div>
+    </br>
+    <b>Import a new Category:</b>
+    <form action="/new" method="post" enctype="multipart/form-data">
+      <div><input type="file" name="import_category">
+    <div><button type="submit" class="btn btn-primary" name="import" value="1">Import</button></div>
+    </br>
 
    <a href="{{ url }}">{{ url_linktext }}</a>
 

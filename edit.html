@@ -28,8 +28,19 @@
       <form action="/edit" method="post">
         <div><input type="hidden" name="category_id" value="{{ category.key.id }}"></div>
         <div><input type="text" class="input-xlarge" name="item"></div>
-        <div><button type="submit" class="btn btn-primary">Add Item</div>
+        <div><button type="submit" class="btn btn-primary" name="add_item" value="1">Add Item</div>
       </form>
+
+      </form>
+      <div><i>-- or --</i></div>
+      </br>
+      <b>Import a Category:</b>
+      <form action="/edit" method="post" enctype="multipart/form-data">
+      <div><input type="hidden" name="category_id" value="{{ category.key.id }}"></div>
+      <div><input type="file" name="import_category">
+      <div><button type="submit" class="btn btn-primary" name="import" value="1">Import</button></div>
+      </br>
+
     {% endif %}
 
    <a href="{{ url }}">{{ url_linktext }}</a>
