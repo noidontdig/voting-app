@@ -23,6 +23,10 @@
           
     <hr>
     {% endif %}
+    {% if skipped %}
+      <p>You skipped!</p>
+
+    {% endif %}
     <h3>{{ category.name }}:</h3>
     <form action="/vote/{{ category.key.id }}" method="post">
 
@@ -42,7 +46,7 @@
       </br>
         <button type="submit" class="btn btn-primary" name="didvote" value="1">Vote!</button>
         <button type="submit" class="btn" name="skip" value="1">Skip</button>
-        {% if voted %}
+        {% if voted or skipped %}
           <a href="/results/{{ category.key.id }}">See Results</a>
         {% endif %}
       </div>

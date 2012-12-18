@@ -199,6 +199,7 @@ class Vote(webapp.RequestHandler):
     skip = self.request.get('skip')
     if not skip:
       voted = True
+      skipped = False
       pair = self.request.get('pair')
       winner_id = self.request.get('vote')
       items = pair.split(',')
@@ -215,6 +216,7 @@ class Vote(webapp.RequestHandler):
 
     else:
       voted = False
+      skipped = True
       winner = ""
       loser = ""
 
@@ -230,6 +232,7 @@ class Vote(webapp.RequestHandler):
 
     template_values = {
         'voted': voted,
+        'skipped': skipped,
         'category': category,
         'winner': winner,
         'loser': loser,
