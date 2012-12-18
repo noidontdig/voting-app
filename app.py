@@ -31,16 +31,7 @@ def category_key(category_id):
 class MainPage(webapp.RequestHandler):
   def get(self):
     
-    categories = Category.all()
-
-    #for cat in categories:
-    #  for item in cat.items:
-    #    total = item.votes + item.losses + 0.0
-    #    percent = item.votes / total
-    #    percent_wins = percent * 100
-    #    item.percent_win = int(percent_wins)
-    #    item.put()
-        
+    categories = Category.all()   
 
     if users.get_current_user():
         url = users.create_logout_url(self.request.uri)
@@ -274,8 +265,8 @@ class Vote(webapp.RequestHandler):
       
       winner.votes += 1
       loser.losses += 1
-      #winner.percent_win = (winner.votes / (winner.votes + winner.losses)) * 100
-      #loser.percent_win = (loser.votes / (loser.votes + loser.losses)) * 100
+      winner.percent_win = int((winner.votes / (winner.votes + winner.losses + 0.0)) * 100)
+      loser.percent_win = int((loser.votes / (loser.votes + loser.losses + 0.0)) * 100)
       winner.put()
       loser.put()
 
