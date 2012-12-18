@@ -1,0 +1,313 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<style>
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote {
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: "Helvetica Neue", Helvetica, "Hiragino Sans GB", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 18px;
+    color: #737373;
+    margin: 10px 13px 10px 13px;
+}
+table {
+	margin: 10px 0 15px 0;
+	border-collapse: collapse;
+}
+td,th {	
+	border: 1px solid #ddd;
+	padding: 3px 10px;
+}
+th {
+	padding: 5px 10px;	
+}
+
+a {
+    color: #0069d6;
+}
+a:hover {
+    color: #0050a3;
+    text-decoration: none;
+}
+a img {
+    border: none;
+}
+p {
+    margin-bottom: 9px;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: #404040;
+    line-height: 36px;
+}
+h1 {
+    margin-bottom: 18px;
+    font-size: 30px;
+}
+h2 {
+    font-size: 24px;
+}
+h3 {
+    font-size: 18px;
+}
+h4 {
+    font-size: 16px;
+}
+h5 {
+    font-size: 14px;
+}
+h6 {
+    font-size: 13px;
+}
+hr {
+    margin: 0 0 19px;
+    border: 0;
+    border-bottom: 1px solid #ccc;
+}
+blockquote {
+    padding: 13px 13px 21px 15px;
+    margin-bottom: 18px;
+    font-family:georgia,serif;
+    font-style: italic;
+}
+blockquote:before {
+    content:"\201C";
+    font-size:40px;
+    margin-left:-10px;
+    font-family:georgia,serif;
+    color:#eee;
+}
+blockquote p {
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 18px;
+    margin-bottom: 0;
+    font-style: italic;
+}
+code, pre {
+    font-family: Monaco, Andale Mono, Courier New, monospace;
+}
+code {
+    background-color: #fee9cc;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 1px 3px;
+    font-size: 12px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+pre {
+    display: block;
+    padding: 14px;
+    margin: 0 0 18px;
+    line-height: 16px;
+    font-size: 11px;
+    border: 1px solid #d9d9d9;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+pre code {
+    background-color: #fff;
+    color:#737373;
+    font-size: 11px;
+    padding: 0;
+}
+@media screen and (min-width: 914px) {
+    body {
+        width: 854px;
+        margin:10px auto;
+    }
+}
+@media print {
+	body,code,pre code,h1,h2,h3,h4,h5,h6 {
+		color: black;
+	}
+	table, pre {
+		page-break-inside: avoid;
+	}
+}
+</style>
+<title>Final Project</title>
+
+</head>
+<body>
+<h1>Final Project</h1>
+
+<h3>By Alexandra Qin</h3>
+
+<hr />
+
+<p>A GoogleAppEngine App that allows you to create/vote on items in categories</p>
+
+<p><strong>Files:</strong></p>
+
+<ul>
+<li>Models/Handlers:
+
+<ul>
+<li>app.py</li>
+</ul>
+</li>
+<li>Templates:
+
+<ul>
+<li>index.html</li>
+<li>edit.html</li>
+<li>new.html</li>
+<li>results.html</li>
+<li>vote.html</li>
+<li>export.xml</li>
+</ul>
+</li>
+<li>Stylesheets:
+
+<ul>
+<li>stylesheets/bootstrap.css</li>
+</ul>
+</li>
+<li>Config:
+
+<ul>
+<li>app.yaml</li>
+<li>index.yaml</li>
+</ul>
+</li>
+</ul>
+
+
+<p><strong>Models:</strong></p>
+
+<ul>
+<li>Category
+
+<ul>
+<li>author: String</li>
+<li>name: String</li>
+<li>date: DateTime</li>
+</ul>
+</li>
+<li>Item
+
+<ul>
+<li>content: String (name of item)</li>
+<li>category: Category</li>
+<li>votes: int</li>
+<li>losses: int</li>
+<li>percent_win: int</li>
+</ul>
+</li>
+</ul>
+
+
+<p>A Category has many fields.</p>
+
+<p>An Item has a Category.</p>
+
+<p><strong>Controllers/Templates:</strong></p>
+
+<ul>
+<li>MainPage
+
+<ul>
+<li>lists all the categories</li>
+<li>renders index.html</li>
+<li>gives the following options for each category listed:
+
+<ul>
+<li>Edit, Vote, Results, Delete, Export</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>Create
+
+<ul>
+<li>creates a new Category</li>
+<li>renders new.html</li>
+<li>user either enters a new category name + item or imports a .xml file</li>
+<li>redirects to MainPage when Category has been created</li>
+</ul>
+</li>
+<li>Edit
+
+<ul>
+<li>edits a Category</li>
+<li>renders edit.html</li>
+<li>user can add items, remove items, or import a .xml file to add new items/replace items of the category</li>
+<li>will throw an error if user tries to Edit a Category he/she has not authored</li>
+<li>will throw an exception if imported category file has a different category name</li>
+</ul>
+</li>
+<li>Delete
+
+<ul>
+<li>deletes an Item or a Category by its id</li>
+<li>will throw an error if user tries to delete a category/item he/she has not authored</li>
+</ul>
+</li>
+<li>Vote
+
+<ul>
+<li>votes on a Category Item</li>
+<li>renders vote.html</li>
+<li>any user can vote on any item</li>
+<li>user is presented with 2 random items from the chosen category</li>
+<li>user can vote or skip</li>
+<li>shows win/losses of both items after the vote</li>
+<li>Item.win_percent is recalculated at the end of each vote and saved</li>
+</ul>
+</li>
+<li>AllResults
+
+<ul>
+<li>shows all results for all categories</li>
+<li>renders results.html</li>
+</ul>
+</li>
+<li>Results
+
+<ul>
+<li>shows results for the given category</li>
+<li>renders results.html</li>
+<li>shows item, wins, losses, percent win</li>
+</ul>
+</li>
+<li>Export
+
+<ul>
+<li>exports a Category to a .xml file</li>
+<li>renders export.xml</li>
+</ul>
+</li>
+</ul>
+
+
+<p><strong>Users:</strong></p>
+
+<p>You must have a google account to Log in. You can create a category as an anonymous user, but you cannot edit it.</p>
+
+<p><strong>Extra Features:</strong></p>
+
+<ul>
+<li>Users can delete items in a category. If a user imports a Category to an existing category, the duplicated items will be deleted and replaced with the new items of the same name.</li>
+<li>All category leaderboard</li>
+</ul>
+
+</body>
+</html>
